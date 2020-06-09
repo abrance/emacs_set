@@ -8,6 +8,9 @@
 
 (package-initialize)
 
+;; stable area
+;; ----------------------------------------------------------------------
+;; C-u 70 -
 ;; (global-linum-mode 1)
 ;; 显示行号
 
@@ -19,27 +22,56 @@
   (find-file "~/.emacs.d/init.el"))
 (global-set-key (kbd "<f2>") 'open-init-file)
 
+;; 快速切换缓存区
+(global-set-key (kbd "<backtab>") #'(lambda ()
+                                      (interactive)
+                                      (switch-to-buffer (other-buffer (current-buffer) 1))))
+
+;; 逗号后自动加空格
+(global-set-key (kbd ",")
+                #'(lambda ()
+                    (interactive)
+                    (insert ", ")))
+
 ;; flycheck global
 (global-flycheck-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; company on
 (global-company-mode)
+(global-set-key (kbd "<C-tab>") 'company-complete)
+                    ; 补全菜单选项快捷键
 
 ;; undo backup
 (setq make-backup-files nil)
 
 ;; 括号匹配
 (add-hook 'emacs-lisp-mode-hook 'show-paren-mode)
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(package-selected-packages (quote (lsp-mode helm flycheck company color-theme))))
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages (quote (lsp-mode helm flycheck company color-theme))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+(electric-pair-mode 1)
+;; 添加单引号补齐
+(setq electric-pair-pairs
+      '(
+		(?\" . ?\")  ;; 添加双引号补齐
+		(?\{ . ?\})  ;; 添加大括号补齐
+		(?\' . ?\')
+		(?\[ . ?\])
+		)
+      )
+;; test area
+;; ----------------------------------------------------------------------
+
+
+;;; init.el ends here
