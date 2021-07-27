@@ -1,3 +1,5 @@
+;; 不使用 lisp 语言版本。
+
 ;; 关闭工具栏，tool-bar-mode 即为一个 Minor Mode
 (tool-bar-mode -1)
 
@@ -78,6 +80,16 @@
 (global-set-key (kbd "<backtab>") #'(lambda ()
                                       (interactive)
                                       (switch-to-buffer (other-buffer (current-buffer) 1))))
+
+;; C 语言开发风格改为 linux 内核模式（花括号缩进问题），缩进改为2
+(setq c-default-style "linux"
+			c-basic-offset 2)
+(setq-default c-basic-offset 2
+							tab-width 2
+							indent-tabs-mode t)
+
+;; desktop 保存桌面环境
+(desktop-save-mode 1)
 
 ;; test area ----------------------------------------------------------------------
 (require 'helm)
