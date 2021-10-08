@@ -75,6 +75,18 @@
 		(?\[ . ?\])
 		)
       )
+
+;; 中英文空格
+(require 'pangu-spacing)
+(global-pangu-spacing-mode 1)
+
+;; 代码区域笔记宏
+(fset 'code-bar
+   [?\C-e return ?\C-u ?6 ?0 ?* return return ?\C-u ?6 ?0 ?- return return ?\C-u ?6 ?0 ?- return ?\C-u ?6 ?0 ?* ?\C-p ?\C-p ?\C-p ?\C-p])
+(fset 'code-region
+   [?\C-e return ?\C-u ?6 ?0 ?- return ?\C-u ?6 ?0 ?- ?\C-p return])
+
+
 ;; test area
 ;; slime package and sbcl
 (add-to-list 'load-path "~/.emacs.d/elpa/slime/")
@@ -222,3 +234,4 @@ If set/leave chinese-font-size to nil, it will follow english-font-size"
 (global-set-key [(control x) (meta +)] (lambda () (interactive) (bhj-step-frame-font-size 1)))
 
 (set-face-attribute 'default nil :font (font-spec))
+
