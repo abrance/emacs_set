@@ -2,7 +2,7 @@
 
 ;; 关闭工具栏，tool-bar-mode 即为一个 Minor Mode
 ;; (tool-bar-mode 0)
-;; (pangu-spacing-mode 1)
+(pangu-spacing-mode 1)
 
 
 ;; 关闭文件滑动控件
@@ -46,9 +46,11 @@
 (delete-selection-mode 1)
 
 (require 'package)
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			 ("marmalade" . "https://marmalade-repo.org/packages/")
-			 ("melpa" . "http://elpa.emacs-china.org/melpa-stable/")))
+;; (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+;; 			 ("marmalade" . "https://marmalade-repo.org/packages/")
+;; 			 ("melpa" . "http://elpa.emacs-china.org/melpa-stable/")))
+(setq package-archives '(("gnu"   . "http://elpa.zilongshanren.com/gnu/")
+                           ("melpa" . "http://elpa.zilongshanren.com/melpa/")))
 
 (package-initialize)
 ;; 全局补全功能
