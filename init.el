@@ -2,9 +2,6 @@
 
 ;; 关闭工具栏，tool-bar-mode 即为一个 Minor Mode
 ;; (tool-bar-mode 0)
-(pangu-spacing-mode 1)
-
-
 ;; 关闭文件滑动控件
 ;; (scroll-bar-mode -1)
 (menu-bar-no-scroll-bar)
@@ -51,6 +48,10 @@
 ;; 			 ("melpa" . "http://elpa.emacs-china.org/melpa-stable/")))
 (setq package-archives '(("gnu"   . "http://elpa.zilongshanren.com/gnu/")
                            ("melpa" . "http://elpa.zilongshanren.com/melpa/")))
+(add-to-list 'load-path "~/.emacs.d/elpa/pangu-spacing-20190823.401")
+(require 'pangu-spacing)
+
+(global-pangu-spacing-mode 1)
 
 (package-initialize)
 ;; 全局补全功能
