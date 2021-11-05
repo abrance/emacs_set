@@ -89,9 +89,9 @@
 
 ;; test area
 ;; slime package and sbcl
-(add-to-list 'load-path "~/.emacs.d/elpa/slime/")
-(require 'slime-autoloads)
-(setq inferior-lisp-program "sbcl.exe")
+;; (add-to-list 'load-path "~/.emacs.d/elpa/slime/")
+;; (require 'slime-autoloads)
+;; (setq inferior-lisp-program "sbcl.exe")
 
 ;; C 语言开发风格改为 linux 内核模式（花括号缩进问题），缩进改为2
 (setq c-default-style "linux"
@@ -112,12 +112,9 @@
 
 ;;; (set-frame-font "-outline-Microsoft YaHei UI-normal-normal-normal-sans-*-*-*-*-p-*-iso8859-1")
 
-
-
-
-
-
-
+;; set language environment 中文乱码
+(set-language-environment 'UTF-8)
+(set-locale-environment "UTF-8")
 
 
 ;;; ----------------------------------------------------------
