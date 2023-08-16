@@ -1,3 +1,20 @@
+;;; package --- Summary
+;;; Commentary:
+
+;; 不使用语言版本。
+;;; Code:
+
+
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(setq package-check-signature nil)
+
+(require 'package)
+(setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                         ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+                         ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+
+(package-initialize)
+
 ;; 不使用 lisp 语言版本。
 
 ;; 关闭工具栏，tool-bar-mode 即为一个 Minor Mode
@@ -42,18 +59,11 @@
 
 (delete-selection-mode 1)
 
-(require 'package)
-;; (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-;; 			 ("marmalade" . "https://marmalade-repo.org/packages/")
-;; 			 ("melpa" . "http://elpa.emacs-china.org/melpa-stable/")))
-(setq package-archives '(("gnu"   . "http://elpa.zilongshanren.com/gnu/")
-                           ("melpa" . "http://elpa.zilongshanren.com/melpa/")))
 (add-to-list 'load-path "~/.emacs.d/elpa/pangu-spacing-20190823.401")
 (require 'pangu-spacing)
 
 (global-pangu-spacing-mode 1)
 
-(package-initialize)
 ;; 全局补全功能
 (global-company-mode)
 
@@ -96,6 +106,77 @@
 
 ;; desktop 保存桌面环境
 (desktop-save-mode 1)
+
+;; ------------------------------------------------------------
+;; 代码区域笔记宏
+(fset 'code-bar
+   [?\C-e return ?\C-a ?\C-u ?6 ?0 ?* return return ?\C-u ?6 ?0 ?- return return ?\C-u ?6 ?0 ?- return ?\C-u ?6 ?0 ?* ?\C-p ?\C-p ?\C-p ?\C-p])
+(fset 'code-region
+			[?\C-e return ?\C-a ?\C-u ?6 ?0 ?- return ?\C-u ?6 ?0 ?- ?\C-p return])
+
+(defun replace-double ()
+  "Replace double newline characters with a single newline in the current region."
+  (interactive)
+  (if (use-region-p)
+      (let ((start (region-beginning))
+            (end (region-end)))
+        (save-excursion
+          (goto-char start)
+          (while (re-search-forward "\\(\n\\)\n" end t)
+            (replace-match "\n" nil nil)))))
+  (message "No region selected"))
+
+(global-set-key (kbd "C-c i") 'indent-rigidly)
+(global-set-key (kbd "C-c r") 'replace-double)
+;; ------------------------------------------------------------
+
+;;------------------------------------------------------------
+(add-to-list 'load-path "~/.emacs.d/elpa/copilot.el/")
+(require 'copilot)
+(setq copilot-network-proxy '(:host "127.0.0.1" :port 7890))
+
+(defun rk/copilot-tab ()
+  "Tab command that will complet with copilot if a completion is
+available. Otherwise will try company, yasnippet or normal
+tab-indent."
+  (interactive)
+  (or (copilot-accept-completion)
+;;      (company-yasnippet-or-completion)
+			(minibuffer-complete)
+      (indent-for-tab-command)))
+
+;; (defun custom-tab-action ()
+;;   "Try `copilot-accept-completion` if a copilot suggestion is available.
+;; Fallback to `tab-to-tab-stop` if not."
+;;   (interactive)
+;;   (if (and (boundp 'copilot-mode) copilot-mode (copilot--overlay-visible))
+;;       (copilot-accept-completion)
+;;     (tab-to-tab-stop)))
+
+
+(defun rk/copilot-complete-or-accept ()
+  "Command that either triggers a completion or accepts one if one
+is available. Useful if you tend to hammer your keys like I do."
+  (interactive)
+  (if (copilot--overlay-visible)
+      (progn
+        (copilot-accept-completion)
+        (open-line 1)
+        (next-line))
+    (copilot-complete)))
+
+(define-key copilot-mode-map (kbd "M-C-<next>") #'copilot-next-completion)
+(define-key copilot-mode-map (kbd "M-C-<prior>") #'copilot-previous-completion)
+(define-key copilot-mode-map (kbd "M-C-<right>") #'copilot-accept-completion-by-word)
+(define-key copilot-mode-map (kbd "M-C-<down>") #'copilot-accept-completion-by-line)
+(define-key global-map (kbd "M-C-<return>") #'rk/copilot-complete-or-accept)
+
+;;(define-key global-map (kbd "<tab>") #'custom-tab-action)
+;;(define-key global-map (kbd "<tab>") #'rk/copilot-tab)
+(define-key global-map (kbd "<tab>") #'rk/copilot-tab)
+(define-key global-map (kbd "C-`") 'tab-to-tab-stop)
+;;------------------------------------------------------------
+
 
 ;; test area ----------------------------------------------------------------------
 (require 'helm)
@@ -164,3 +245,30 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(defun convert-to-markdown ()
+  (interactive)
+  ;; Step 1: Replace leading > with same number of #, or remove leading whitespaces if not starting with >
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (if (looking-at "^\\([[:space:]]*\\)\\(>+\\)")
+          (replace-match (concat (make-string (length (match-string 2)) ?#) " ") nil nil nil 0)
+        (if (looking-at "^[[:space:]]+\\([^>[:space:]].*\\)")
+            (replace-match (match-string 1) nil nil nil 0)))
+      (forward-line)))
+  ;; Step 2: Insert a blank line after every line
+  (save-excursion
+    (goto-char (point-min))
+    (while (< (point) (point-max))
+      (end-of-line)
+      (insert "\n")
+      (forward-line 1)))
+  ;; Step 3: Replace consecutive blank lines with a single blank line
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "\n\n\n+" nil t)
+      (replace-match "\n\n"))))
+;;------------------------------------------------------------
+
+;;; init.el ends here

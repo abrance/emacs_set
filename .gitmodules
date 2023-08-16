@@ -1,0 +1,9 @@
+[submodule "elpa/markdown-mode"]
+	path = elpa/markdown-mode
+	url = https://github.com/jrblevin/markdown-mode.git
+[submodule "elpa/copilot.el"]
+	path = elpa/copilot.el
+	url = https://github.com/zerolfx/copilot.el.git
+[submodule "elpa/codeium.el"]
+	path = elpa/codeium.el
+	url = https://github.com/Exafunction/codeium.el
